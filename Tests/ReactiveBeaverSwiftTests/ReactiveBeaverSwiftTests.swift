@@ -2,14 +2,17 @@ import XCTest
 @testable import ReactiveBeaverSwift
 
 final class ReactiveBeaverSwiftTests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(ReactiveBeaverSwift().text, "Hello, World!")
+    func testParserCreation() {
+        XCTAssertNotNil(Parser())
+    }
+    
+    func testUnpackingForEmptyPath() {
+        let unpacker = ZipUnpacker()
+        XCTAssertNil(unpacker.unpack(sourcePath: ""))
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testParserCreation", testParserCreation),
+        ("testUnpackingForEmptyPath", testUnpackingForEmptyPath),
     ]
 }
