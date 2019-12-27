@@ -57,11 +57,19 @@ struct Epub {
 }
 
 final class ZipUnpacker {
-    func unpack(sourcePath: String, destinationPath: String) {
+    func unpack(sourcePath: String, destinationPath: String) -> Error? {
+        guard FileManager.default.fileExists(atPath: sourcePath) else {
+            return ErrorGenerator.unpackerError(with: ZipUnpacker.ErrorCode.incorrectSourcePath)
+        }
+        
+        guard FileManager.default.directoryExists(at: destinationPath) else {
+           return ErrorGenerator.unpackerError(with: ZipUnpacker.ErrorCode.incorrectDestinationPath)
+        }
+        
         let sourceURL = URL(fileURLWithPath: sourcePath)
         let destinationURL = URL(fileURLWithPath: destinationPath)
         
-        let error = try? FileManager.default.unzipItem(at: sourceURL, to: destinationURL)
+        return nil
     }
 }
 

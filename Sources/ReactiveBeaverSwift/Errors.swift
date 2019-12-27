@@ -7,6 +7,15 @@
 
 import Foundation
 
+extension ZipUnpacker {
+    static let errorDomain = "ReactiveBeaverSwift.ZipUnpacker.Error"
+    
+    enum ErrorCode: Int {
+        case incorrectDestinationPath
+        case incorrectSourcePath
+    }
+}
+
 extension Parser {
     
     static let errorDomain = "ReactiveBeaverSwift.Epub.Parser.Error"
@@ -68,25 +77,31 @@ extension Epub.OpfElement {
     
 }
 
-extension Error {
+struct ErrorGenerator {
     
-    func epubParserError(with errorCode: Parser.ErrorCode) -> Error {
+    static func unpackerError(with errorCode: ZipUnpacker.ErrorCode) -> Error {
+        return NSError(domain: ZipUnpacker.errorDomain, code: errorCode.rawValue)
+    }
+    
+    static func epubParserError(with errorCode: Parser.ErrorCode) -> Error {
         return NSError(domain: Parser.errorDomain, code: errorCode.rawValue)
     }
     
-    func manifestParserError(with errorCode: Epub.ManifestElement.ErrorCode) -> Error {
+    static func manifestParserError(with errorCode: Epub.ManifestElement.ErrorCode) -> Error {
         return NSError(domain: Epub.ManifestElement.errorDomain, code: errorCode.rawValue)
     }
     
-    func metadataParserError(with errorCode: Epub.Metadata.ErrorCode) -> Error {
+    static func metadataParserError(with errorCode: Epub.Metadata.ErrorCode) -> Error {
         return NSError(domain: Epub.Metadata.errorDomain, code: errorCode.rawValue)
     }
     
-    func spineParserError(with errorCode: Epub.SpineElement.ErrorCode) -> Error {
+    static func spineParserError(with errorCode: Epub.SpineElement.ErrorCode) -> Error {
         return NSError(domain: Epub.SpineElement.errorDomain, code: errorCode.rawValue)
     }
     
-    func opfParserError() { }
+    static func opfParserError(with errorCode: Epub.OpfElement.ErrorCode) -> Error {
+        return NSError(domain: Epub.OpfElement.errorDomain, code: errorCode.rawValue)
+    }
     
 }
 
