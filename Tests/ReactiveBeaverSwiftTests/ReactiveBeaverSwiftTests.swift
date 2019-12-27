@@ -6,13 +6,13 @@ final class ReactiveBeaverSwiftTests: XCTestCase {
         XCTAssertNotNil(Parser())
     }
     
-    func testUnpackingForEmptyPath() {
+    func testUnpackingForEmptyPaths() {
         let unpacker = ZipUnpacker()
-        XCTAssertNil(unpacker.unpack(sourcePath: ""))
+        XCTAssertNil(unpacker.unpack(sourcePath: "", destinationPath: ""))
     }
 
     static var allTests = [
         ("testParserCreation", testParserCreation),
-        ("testUnpackingForEmptyPath", testUnpackingForEmptyPath),
+        ("testUnpackingForEmptyPaths", testUnpackingForEmptyPaths),
     ]
 }

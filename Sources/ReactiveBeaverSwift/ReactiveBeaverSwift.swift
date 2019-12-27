@@ -1,3 +1,6 @@
+import ZIPFoundation
+import Foundation
+
 struct Epub {
     let sha1: String
     let sourcePath: String
@@ -49,11 +52,16 @@ struct Epub {
         let idRef: String
         let fileName: String
     }
+    
+    struct OpfElement { }
 }
 
 final class ZipUnpacker {
-    func unpack(sourcePath: String) -> String? {
-        return nil
+    func unpack(sourcePath: String, destinationPath: String) {
+        let sourceURL = URL(fileURLWithPath: sourcePath)
+        let destinationURL = URL(fileURLWithPath: destinationPath)
+        
+        let error = try? FileManager.default.unzipItem(at: sourceURL, to: destinationURL)
     }
 }
 
@@ -67,4 +75,6 @@ final class Parser {
     func parse(sourcePath: String) -> Epub? {
         return nil
     }
+    
+    
 }
