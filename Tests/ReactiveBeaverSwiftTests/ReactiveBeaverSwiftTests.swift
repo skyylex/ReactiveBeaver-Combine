@@ -6,22 +6,22 @@ final class ReactiveBeaverSwiftTests: XCTestCase {
         XCTAssertNotNil(Parser())
     }
     
-    func testUnpackingForEmptySourcePath() {
-        let unpacker = ZipUnpacker()
+    func testUnzippingForEmptySourcePath() {
+        let unpacker = ZipUnarchiver()
         let error = unpacker.unpack(sourcePath: "", destinationPath: NSTemporaryDirectory())
         XCTAssertNotNil(error)
     }
     
-    func testUnpackingForEmptyDestinationPath() {
-        let unpacker = ZipUnpacker()
+    func testUnzippingForEmptyDestinationPath() {
+        let unpacker = ZipUnarchiver()
         let error = unpacker.unpack(sourcePath: temporaryFile().absoluteString, destinationPath: "")
         XCTAssertNotNil(error)
     }
 
     static var allTests = [
         ("testParserCreation", testParserCreation),
-        ("testUnpackingForEmptyPaths", testUnpackingForEmptySourcePath),
-        ("testUnpackingForEmptyDestinationPath", testUnpackingForEmptyDestinationPath),
+        ("testUnzippingForEmptySourcePath", testUnzippingForEmptySourcePath),
+        ("testUnzippingForEmptyDestinationPath", testUnzippingForEmptyDestinationPath),
     ]
 }
 

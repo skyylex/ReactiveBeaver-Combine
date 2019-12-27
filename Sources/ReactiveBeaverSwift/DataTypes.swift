@@ -1,4 +1,10 @@
-import ZIPFoundation
+//
+//  File.swift
+//  
+//
+//  Created by skyylex on 28/12/2019.
+//
+
 import Foundation
 
 struct Epub {
@@ -54,35 +60,4 @@ struct Epub {
     }
     
     struct OpfElement { }
-}
-
-final class ZipUnpacker {
-    func unpack(sourcePath: String, destinationPath: String) -> Error? {
-        guard FileManager.default.fileExists(atPath: sourcePath) else {
-            return ErrorGenerator.unpackerError(with: ZipUnpacker.ErrorCode.incorrectSourcePath)
-        }
-        
-        guard FileManager.default.directoryExists(at: destinationPath) else {
-           return ErrorGenerator.unpackerError(with: ZipUnpacker.ErrorCode.incorrectDestinationPath)
-        }
-        
-        let sourceURL = URL(fileURLWithPath: sourcePath)
-        let destinationURL = URL(fileURLWithPath: destinationPath)
-        
-        return nil
-    }
-}
-
-final class Parser {
-    let unpacker: ZipUnpacker
-    
-    init(unpacker: ZipUnpacker = ZipUnpacker()) {
-        self.unpacker = unpacker
-    }
-    
-    func parse(sourcePath: String) -> Epub? {
-        return nil
-    }
-    
-    
 }

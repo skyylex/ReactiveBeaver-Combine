@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension ZipUnpacker {
+extension ZipUnarchiver {
     static let errorDomain = "ReactiveBeaverSwift.ZipUnpacker.Error"
     
     enum ErrorCode: Int {
@@ -79,8 +79,8 @@ extension Epub.OpfElement {
 
 struct ErrorGenerator {
     
-    static func unpackerError(with errorCode: ZipUnpacker.ErrorCode) -> Error {
-        return NSError(domain: ZipUnpacker.errorDomain, code: errorCode.rawValue)
+    static func unpackerError(with errorCode: ZipUnarchiver.ErrorCode) -> Error {
+        return NSError(domain: ZipUnarchiver.errorDomain, code: errorCode.rawValue)
     }
     
     static func epubParserError(with errorCode: Parser.ErrorCode) -> Error {
