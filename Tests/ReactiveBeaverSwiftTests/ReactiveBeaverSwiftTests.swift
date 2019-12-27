@@ -9,13 +9,28 @@ final class ReactiveBeaverSwiftTests: XCTestCase {
     func testUnzippingForEmptySourcePath() {
         let unpacker = ZipUnarchiver()
         let error = unpacker.unpack(sourcePath: "", destinationPath: NSTemporaryDirectory())
-        XCTAssertNotNil(error)
+        
+        guard let unwrapedError = error as? ZipUnarchiver.ErrorType else { XCTFail(); return; }
+        
+        XCTAssertEqual(unwrapedError, ZipUnarchiver.ErrorType.incorrectSourcePath)
     }
     
     func testUnzippingForEmptyDestinationPath() {
         let unpacker = ZipUnarchiver()
         let error = unpacker.unpack(sourcePath: temporaryFile().absoluteString, destinationPath: "")
-        XCTAssertNotNil(error)
+        
+        guard let unwrapedError = error as? ZipUnarchiver.ErrorType else { XCTFail(); return; }
+        
+        XCTAssertEqual(unwrapedError, ZipUnarchiver.ErrorType.incorrectDestinationPath)
+    }
+    
+    func testUnzippingForBrokenArchive() {
+        let unpacker = ZipUnarchiver()
+        let error = unpacker.unpack(sourcePath: temporaryFile().absoluteString, destinationPath: NSTemporaryDirectory())
+        
+        guard let unwrapedError = error as? ZipUnarchiver.ErrorType else { XCTFail(); return; }
+        
+        XCTAssertEqual(unwrapedError, ZipUnarchiver.ErrorType.incorrectArchive)
     }
 
     static var allTests = [
@@ -29,7 +44,12 @@ func temporaryFile(for directoryPath: String = NSTemporaryDirectory(), name: Str
     guard let directoryURL = temporaryDirectoryURL(for: directoryPath) else { preconditionFailure() }
     let fileName = ProcessInfo().globallyUniqueString
 
-    return directoryURL.appendingPathComponent(fileName)
+    let fileURL = directoryURL.appendingPathComponent(fileName)
+    try? Data(base64Encoded: "dummy-string")?.write(to: fileURL, options: .atomic)
+    
+    let exists = FileManager.default.fileExists(atPath: fileURL.absoluteString)
+    
+    return fileURL
 }
 
 func temporaryDirectoryURL(for directoryPath: String = NSTemporaryDirectory()) -> URL? {
