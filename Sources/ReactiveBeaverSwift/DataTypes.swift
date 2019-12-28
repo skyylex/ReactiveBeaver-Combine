@@ -8,15 +8,15 @@
 import Foundation
 
 struct Epub {
-    let sha1: String
-    let sourcePath: String
-    let destinationPath: String
-    let spineElements: [AnyObject] // TODO: improve types here
-    let manifestElements: [AnyObject] // TODO: improve types here
-    let coverPath: String?
+    let sha1: String // FIXME: type is not optimized here
+    let sourcePath: URL
+    let destinationPath: URL
+    let spineElements: [SpineElement]
+    let manifestElements: [ManifestElement]
+    let coverPath: URL?
     
     class NavPointElement {
-        let level: String // FIXME type is not optimized here
+        let level: String // FIXME: type is not optimized here
         var parentElement: NavPointElement?
         let childElements: [NavPointElement]
         
