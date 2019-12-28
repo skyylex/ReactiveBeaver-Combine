@@ -17,7 +17,7 @@ final class ReactiveBeaverSwiftTests: XCTestCase {
     
     func testUnzippingForEmptyDestinationPath() {
         let unpacker = ZipUnarchiver()
-        let error = unpacker.unpack(sourcePath: temporaryFile().absoluteString, destinationPath: "")
+        let error = unpacker.unpack(sourcePath: createDummyFile().path, destinationPath: "")
         
         guard let unwrapedError = error as? ZipUnarchiver.ErrorType else { XCTFail(); return; }
         
@@ -26,7 +26,7 @@ final class ReactiveBeaverSwiftTests: XCTestCase {
     
     func testUnzippingForBrokenArchive() {
         let unpacker = ZipUnarchiver()
-        let error = unpacker.unpack(sourcePath: temporaryFile().absoluteString, destinationPath: NSTemporaryDirectory())
+        let error = unpacker.unpack(sourcePath: createDummyFile().path, destinationPath: NSTemporaryDirectory())
         
         guard let unwrapedError = error as? ZipUnarchiver.ErrorType else { XCTFail(); return; }
         
@@ -40,23 +40,24 @@ final class ReactiveBeaverSwiftTests: XCTestCase {
     ]
 }
 
-func temporaryFile(for directoryPath: String = NSTemporaryDirectory(), name: String = UUID().uuidString) -> URL {
-    guard let directoryURL = temporaryDirectoryURL(for: directoryPath) else { preconditionFailure() }
-    let fileName = ProcessInfo().globallyUniqueString
+fileprivate extension ReactiveBeaverSwiftTests {
+    func createDummyFile(for directoryPath: String = NSTemporaryDirectory(),
+                         fileName: String = UUID().uuidString) -> URL {
+        let directoryURL = URL(fileURLWithPath: directoryPath)
+        let fileURL = directoryURL.appendingPathComponent(fileName)
+        
+        do { try createDummyData().write(to: fileURL, options: .atomicWrite) }
+        catch { preconditionFailure("Cannot write dummy data") }
+        
+        guard FileManager.default.fileExists(atPath: fileURL.path) else { preconditionFailure("Dummy file wasn't written") }
+        
+        return fileURL
+    }
 
-    let fileURL = directoryURL.appendingPathComponent(fileName)
-    try? Data(base64Encoded: "dummy-string")?.write(to: fileURL, options: .atomic)
-    
-    let exists = FileManager.default.fileExists(atPath: fileURL.absoluteString)
-    
-    return fileURL
-}
-
-func temporaryDirectoryURL(for directoryPath: String = NSTemporaryDirectory()) -> URL? {
-    let destinationURL = URL(fileURLWithPath: directoryPath)
-
-    return try? FileManager.default.url(for: .itemReplacementDirectory,
-                                        in: .userDomainMask,
-                                        appropriateFor: destinationURL,
-                                        create: true)
+    func createDummyData() -> Data {
+        let randomString = UUID().uuidString
+        guard let data = randomString.data(using: .utf8) else { preconditionFailure("Cannot create dummy data") }
+        
+        return data
+    }
 }
