@@ -1,11 +1,15 @@
 import Foundation
 
+protocol Unarchiver {
+    func unpack(zipArchiveURL: URL, targetDirectoryURL: URL) -> Error?
+}
+
 final class Parser {
     typealias ParserCompletion = (Result<Epub, Error>) -> ()
     
-    let unpacker: ZipUnarchiver
+    let unpacker: Unarchiver
     
-    init(unpacker: ZipUnarchiver = ZipUnarchiver()) {
+    init(unpacker: Unarchiver) {
         self.unpacker = unpacker
     }
     

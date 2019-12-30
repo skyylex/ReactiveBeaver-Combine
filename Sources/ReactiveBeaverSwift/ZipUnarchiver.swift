@@ -8,7 +8,7 @@
 import Foundation
 import ZIPFoundation
 
-final class ZipUnarchiver {
+final class ZipUnarchiver: Unarchiver {
     func unpack(zipArchiveURL: URL, targetDirectoryURL: URL) -> Error? {
         guard PathValidator.validate(fileURL: zipArchiveURL) else {
             return ErrorType.incorrectSourcePath
