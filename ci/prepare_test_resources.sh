@@ -36,7 +36,7 @@ setup_environment()
     if [ $UNAME == "Darwin" ]; then
         PLATFORM="x86_64-apple-macosx"
         EXECUTABLE_DIRECTORY="./.build/${PLATFORM}/debug"
-        TEST_RESOURCES_DIRECTORY="$EXECUTABLE_DIRECTORY/$(echo $TEST_PACKAGE_NAME)PackageTests.xctest/Contents/Resource"
+        TEST_RESOURCES_DIRECTORY="$EXECUTABLE_DIRECTORY/$(echo $TEST_PACKAGE_NAME)PackageTests.xctest/Contents/Resources"
         
         echo "[Success] Paths are set to:"
         echo " - EXECUTABLE_DIRECTORY: $EXECUTABLE_DIRECTORY"
