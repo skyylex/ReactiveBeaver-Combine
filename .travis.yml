@@ -4,5 +4,6 @@ language: swift
 osx_image: xcode11
 install: swift package update
 script:
-  - swift build
+  - swift build --build-tests
+  - ./ci/prepare_test_resources.sh
   - swift test
