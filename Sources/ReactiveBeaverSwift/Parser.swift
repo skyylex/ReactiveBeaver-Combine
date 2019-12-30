@@ -20,7 +20,12 @@ final class Parser {
             return
         }
         
-        completion(.success(createDummyEpub(epubURL: epubURL, destinationFolderURL: destinationFolderURL)))
+        let error = unpacker.unpack(zipArchiveURL: epubURL, targetDirectoryURL: destinationFolderURL)
+        if let error = error {
+            completion(.failure(error))
+        } else {
+            completion(.success(createDummyEpub(epubURL: epubURL, destinationFolderURL: destinationFolderURL)))
+        }
     }
     
     // MARK: Dummy data
