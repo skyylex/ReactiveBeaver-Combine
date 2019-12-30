@@ -1,10 +1,33 @@
-set -e
-set -o pipefail
+TEST_RESOURCES_URL="https://github.com/skyylex/ReactiveBeaverTestResources.git"
+TEST_RESOURCES_REPO_NAME="ReactiveBeaverTestResources"
 
 PLATFORM=""
 EXECUTABLE_DIRECTORY=""
 TEST_RESOURCES_DIRECTORY=""
-TEST_TARGET_NAME=""
+TEST_PACKAGE_NAME=""
+
+install_required_dependencies()
+{
+	brew install jq
+}
+
+fetch_test_resources()
+{
+	if [ ! -d $TEST_RESOURCES_REPO_NAME ]; then
+  		git clone $TEST_RESOURCES_URL
+  	else
+  		echo "Repository $TEST_RESOURCES_REPO_NAME was already cloned"
+	fi
+}
+
+copy_test_resources()
+{
+	if [ ! -d $TEST_RESOURCES_DIRECTORY ]; then
+  		mkdir $TEST_RESOURCES_DIRECTORY
+  	fi
+
+	cp ReactiveBeaverTestResources/epub-books/*.epub $TEST_RESOURCES_DIRECTORY
+}
 
 setup_environment()
 {
@@ -13,7 +36,7 @@ setup_environment()
     if [ $UNAME == "Darwin" ]; then
         PLATFORM="x86_64-apple-macosx"
         EXECUTABLE_DIRECTORY="./.build/${PLATFORM}/debug"
-        TEST_RESOURCES_DIRECTORY="$EXECUTABLE_DIRECTORY/debug/$TEST_TARGET_NAME.xctest/Contents/Resource"
+        TEST_RESOURCES_DIRECTORY="$EXECUTABLE_DIRECTORY/$(echo $TEST_PACKAGE_NAME)PackageTests.xctest/Contents/Resource"
         
         echo "[Success] Paths are set to:"
         echo " - EXECUTABLE_DIRECTORY: $EXECUTABLE_DIRECTORY"
@@ -37,9 +60,9 @@ setup_test_target_name()
         target_type=$(echo $package_description | jq ".targets[$i].type")
         target_name=$(echo $package_description | jq ".targets[$i].name")
 
-        if [ "$target_type" == "\"test\"" ]; then
-            echo "[Success] Test target found: $target_name"
-            TEST_TARGET_NAME=$(echo $target_name | tr -d '"')
+        if [ "$target_type" == "\"regular\"" ]; then
+            echo "[Success] Main target found: $target_name"
+            TEST_PACKAGE_NAME=$(echo $target_name | tr -d '"')
         fi
         
         if [ "$target_type" == "null" ]; then
@@ -57,6 +80,10 @@ setup_test_target_name()
 echo " **** [Test Resources] **** "
 
 echo ""
+echo "[Step 0] Installing dependencies"
+echo ""
+install_required_dependencies
+echo ""
 echo "[Step 1] Finding test target names using Package.swift..."
 echo ""
 setup_test_target_name
@@ -64,6 +91,16 @@ echo ""
 echo "[Step 2] Calculating paths for testing and executing..."
 echo ""
 setup_environment
+echo ""
+echo "[Step 3] Fetching remote resources..."
+echo ""
+fetch_test_resources
+echo ""
+echo "[Step 4] Copying resources..."
+echo ""
+copy_test_resources
+echo ""
+
 
 echo ""
 echo " **** [Test Resources] **** "
