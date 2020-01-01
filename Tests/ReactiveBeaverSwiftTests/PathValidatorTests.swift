@@ -14,18 +14,37 @@ final class PathValidatorTests: XCTestCase {
     }
     
     func testNonExistingPathsValidation() {
+        createAllItems(from: paths)
+        
         XCTAssertFalse(PathValidator.validate(paths: paths).isEmpty)
     }
     
     func testExistingPathsValidation() {
-        FileSupport.createDirectory(at: paths.metaInfDirectory)
-        FileSupport.createDirectory(at: paths.oebpsDirectory)
-        FileSupport.createDummyFile(using: paths.containerXML)
+        let fileURLs = Set([paths.containerXML])
+        let directoryURLs = Set([paths.metaInfDirectory, paths.oebpsDirectory])
         
-        XCTAssertTrue(PathValidator.validate(paths: paths).isEmpty)
+        let validationErrors = PathValidator.validate(paths: paths)
+        let brokenURLs = validationErrors.map { (error: PathValidator.ErrorType) -> URL in
+            switch error {
+            case .missingDirectory(let url):
+                XCTAssertTrue(directoryURLs.contains(url))
+                return url
+            case .missingFile(let url):
+                XCTAssertTrue(fileURLs.contains(url))
+                return url
+            }
+        }
+        
+        XCTAssertEqual(brokenURLs.count, fileURLs.count + directoryURLs.count)
     }
     
     // Shortcuts
+    
+    func createAllItems(from paths: Paths) {
+        FileSupport.createDirectory(at: paths.metaInfDirectory)
+        FileSupport.createDirectory(at: paths.oebpsDirectory)
+        FileSupport.createDummyFile(using: paths.containerXML)
+    }
     
     func cleanUpFileSystem() {
         do {
