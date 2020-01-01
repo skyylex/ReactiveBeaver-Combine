@@ -14,12 +14,6 @@ final class PathValidatorTests: XCTestCase {
     }
     
     func testNonExistingPathsValidation() {
-        createAllItems(from: paths)
-        
-        XCTAssertFalse(PathValidator.validate(paths: paths).isEmpty)
-    }
-    
-    func testExistingPathsValidation() {
         let fileURLs = Set([paths.containerXML])
         let directoryURLs = Set([paths.metaInfDirectory, paths.oebpsDirectory])
         
@@ -36,6 +30,12 @@ final class PathValidatorTests: XCTestCase {
         }
         
         XCTAssertEqual(brokenURLs.count, fileURLs.count + directoryURLs.count)
+    }
+    
+    func testExistingPathsValidation() {
+        createAllItems(from: paths)
+        
+        XCTAssertTrue(PathValidator.validate(paths: paths).isEmpty)
     }
     
     // Shortcuts

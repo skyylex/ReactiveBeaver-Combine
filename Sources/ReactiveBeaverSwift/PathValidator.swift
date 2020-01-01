@@ -44,8 +44,9 @@ struct PathValidator {
         ]
         
         let errorFromURL = { (invalidItemURL: URL) in
-            return invalidItemURL.isFileURL ? ErrorType.missingFile(invalidItemURL)
-                                            : ErrorType.missingDirectory(invalidItemURL)
+            return invalidItemURL.pathExtension.isEmpty ? ErrorType.missingDirectory(invalidItemURL)
+                                                        : ErrorType.missingFile(invalidItemURL)
+                                                        
         }
         
         let validatedFileURLs = fileURLs.map { (fileURL: URL) -> (URL, Bool) in
