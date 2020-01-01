@@ -30,6 +30,13 @@ extension Parser {
     
 }
 
+extension PathValidator {
+    enum ErrorType: Error {
+        case missingFile(URL)
+        case missingDirectory(URL)
+    }
+}
+
 extension Epub.ManifestElement {
     
     enum ErrorType: Error {

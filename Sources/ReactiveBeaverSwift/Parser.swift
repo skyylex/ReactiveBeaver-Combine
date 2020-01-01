@@ -1,4 +1,5 @@
 import Foundation
+import Kanna
 
 protocol Unarchiver {
     func unpack(zipArchiveURL: URL, targetDirectoryURL: URL) -> Error?
@@ -28,7 +29,13 @@ final class Parser {
         if let error = error {
             completion(.failure(error))
         } else {
-            completion(.success(createDummyEpub(epubURL: epubURL, destinationFolderURL: destinationFolderURL)))
+            let paths = Paths(epubUnzippedFolderURL: destinationFolderURL)
+            if let error = PathValidator.validate(paths: paths).first {
+                completion(.failure(error))
+            } else {
+                completion(.success(createDummyEpub(epubURL: epubURL,
+                                                    destinationFolderURL: destinationFolderURL)))
+            }
         }
     }
     
