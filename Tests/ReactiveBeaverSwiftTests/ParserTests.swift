@@ -1,5 +1,4 @@
 import XCTest
-import Kanna
 @testable import ReactiveBeaverSwift
 
 struct MockedUnarchiver: Unarchiver {
