@@ -1,5 +1,4 @@
 import Foundation
-import Kanna
 
 protocol Unarchiver {
     func unpack(zipArchiveURL: URL, targetDirectoryURL: URL) -> Error?

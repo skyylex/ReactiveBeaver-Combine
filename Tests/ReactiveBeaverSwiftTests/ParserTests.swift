@@ -1,4 +1,5 @@
 import XCTest
+import Kanna
 @testable import ReactiveBeaverSwift
 
 struct MockedUnarchiver: Unarchiver {
@@ -18,7 +19,7 @@ final class ParserTests: XCTestCase {
     
     func testParsing() {
         let parser = Parser(unpacker: MockedUnarchiver())
-        
+
         let expectation = self.expectation(description: "Parsing should return valid Epub object")
         parser.parse(epubURL: mobyDickEpubURL, destinationFolderURL: destinationFolderURL) { result in
             switch (result) {
@@ -29,8 +30,31 @@ final class ParserTests: XCTestCase {
                 expectation.fulfill()
             }
         }
-        
+
         wait(for: [expectation], timeout: 0.1)
+    }
+    
+    func testContainerXMLParsing() {
+        let sampleContainerXML = """
+        <?xml version="1.0" encoding="UTF-8"?><container xmlns="urn:oasis:names:tc:opendocument:xmlns:container" version="1.0">
+        <rootfiles>
+        <rootfile full-path="OPS/package.opf" media-type="application/oebps-package+xml"/>
+        </rootfiles>
+        </container>
+        """
+        
+        guard let xmlData = sampleContainerXML.data(using: .utf8) else { preconditionFailure("Failed to create xml data") }
+        
+        let parser = SimpleXMLBeaver()
+        let result = parser.parse(xmlData: xmlData)
+        
+        switch result {
+        case .success(let element):
+            let packageOpfURL = ContainerXMLBeaver.gnaw(containerXML: element)
+            XCTAssertEqual(packageOpfURL?.path ?? "", "OPS/package.opf")
+        case .failure(let error):
+            XCTAssertFalse(true, "Container XML parsing failed \(error)")
+        }
     }
     
     private func sharedTemporaryFolderURL() -> URL {
@@ -64,5 +88,6 @@ final class ParserTests: XCTestCase {
     
     static var allTests = [
         ("testParsing", testParsing),
+        ("testContainerXMLParsing", testContainerXMLParsing),
     ]
 }
