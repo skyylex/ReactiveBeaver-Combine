@@ -46,7 +46,7 @@ final class ParserTests: XCTestCase {
         guard let xmlData = sampleContainerXML.data(using: .utf8) else { preconditionFailure("Failed to create xml data") }
         
         let parser = SimpleXMLBeaver()
-        let result = parser.parse(xmlData: xmlData)
+        let result = parser.gnaw(xmlData: xmlData)
         
         switch result {
         case .success(let element):

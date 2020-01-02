@@ -44,7 +44,7 @@ final class SimpleXMLBeaver: NSObject, XMLParserDelegate {
     var validationError: Error?
     var parsingError: Error?
     
-    func parse(xmlData: Data) -> Result<SimpleXMLElement, Error> {
+    func gnaw(xmlData: Data) -> Result<SimpleXMLElement, Error> {
         let parser = XMLParser(data: xmlData)
         parser.delegate = self
         
