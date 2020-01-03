@@ -8,7 +8,6 @@
 import Foundation
 
 final class SpineXMLBeaver {
-    struct Spine { }
     
     static func gnaw(spineXML: SimpleXMLElement) -> Spine {
         return Spine()

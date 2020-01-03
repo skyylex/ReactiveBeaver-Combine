@@ -87,8 +87,8 @@ final class ParserTests: XCTestCase {
         
         switch result {
         case .success(let element):
-            let packageOpfURL = ContainerXMLBeaver.gnaw(containerXML: element)
-            XCTAssertEqual(packageOpfURL?.path ?? "", "OPS/package.opf")
+            let container = ContainerXMLBeaver.gnaw(containerXML: element)
+            XCTAssertEqual(container?.packageOpfURL.path ?? "", "OPS/package.opf")
         case .failure(let error):
             XCTAssertFalse(true, "Container XML parsing failed \(error)")
         }

@@ -8,22 +8,20 @@
 import Foundation
 
 final class ContainerXMLBeaver {
-    struct Keys {
-        static let targetNodeKey = "rootfile"
-        static let fullPathKey = "full-path"
-    }
     
-    typealias PackageOpfURL = URL
-    
-    static func gnaw(containerXML: SimpleXMLElement) -> PackageOpfURL? {
+    static func gnaw(containerXML: SimpleXMLElement) -> ContainerXML? {
         return gnaw(element: containerXML)
     }
     
-    private static func gnaw(element: SimpleXMLElement) -> PackageOpfURL? {
-        if let fullPath = element.attributes[Keys.fullPathKey], element.name == Keys.targetNodeKey {
-            return URL(string: fullPath)
+    private static func gnaw(element: SimpleXMLElement) -> ContainerXML? {
+        if let fullPath = element.attributes[ContainerXML.Keys.fullPathKey],
+               element.name == ContainerXML.Keys.targetNodeKey {
+            guard let url = URL(string: fullPath) else { return nil }
+            
+            return ContainerXML(packageOpfURL: url)
         }
 
         return element.children.map { gnaw(containerXML: $0) }.compactMap { $0 }.first
     }
+    
 }
