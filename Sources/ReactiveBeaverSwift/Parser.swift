@@ -45,7 +45,7 @@ final class Parser {
             sha1: "",
             sourcePath: epubURL,
             destinationPath: destinationFolderURL,
-            spine: Spine(),
+            spine: Spine(items: []),
             manifest: Manifest(items: []),
             metadata: Metadata(metadataMap: [:]),
             container: ContainerXML(packageOpfURL: URL(fileURLWithPath: "")),

@@ -108,7 +108,30 @@ struct Manifest {
 
 }
 
-struct Spine { }
+struct Spine {
+    struct Keys {
+        static let spineKey = "spine"
+        static let idRefKey = "idref"
+        static let linearKey = "linear"
+        static let itemRefKey = "itemref"
+    }
+    
+    struct ItemRef {
+        let linear: Bool
+        let idRef: String
+        
+        init?(xmlElement: SimpleXMLElement) {
+            guard xmlElement.name == Keys.itemRefKey else { return nil }
+            guard let linear = BoolLiteral(rawValue: xmlElement.attributes[Keys.linearKey] ?? "") else { return nil }
+            guard let idRef = xmlElement.attributes[Keys.idRefKey] else { return nil }
+            
+            self.linear = linear.boolValue
+            self.idRef = idRef
+        }
+    }
+    
+    let items: [ItemRef]
+}
 
 final class SimpleXMLElement {
     

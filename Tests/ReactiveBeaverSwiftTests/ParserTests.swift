@@ -10,7 +10,7 @@ struct MockedUnarchiver: Unarchiver {
 final class ParserTests: XCTestCase {
     var mobyDickEpubURL: URL!
     var destinationFolderURL: URL!
-    
+
     override func setUp() {
         mobyDickEpubURL = mobyDickFileURL()
         destinationFolderURL = createTempFolderURL()
@@ -36,31 +36,11 @@ final class ParserTests: XCTestCase {
     func testSpineXMLParsing() {
         let cover = "cover"
         let titlePage = "titlepage"
-        let briefToc = "brief-toc"
-        let preface = "xpreface_001"
-        let introduction = "xintroduction_001"
-        let epigraph = "xepigraph_001"
-        let chapter1 = "chapter1"
-        let chapter2 = "chapter2"
-        let chapter3 = "chapter3"
-        let chapter4 = "chapter4"
-        let copyright = "copyright"
-        let toc = "toc"
         
         let spineXMLString = """
         <spine>
           <itemref idref="\(cover)" linear="no"/>
           <itemref idref="\(titlePage)" linear="yes"/>
-          <itemref idref="\(briefToc)" linear="yes"/>
-          <itemref linear="yes" idref="\(preface)"/>
-          <itemref linear="yes" idref="\(introduction)"/>
-          <itemref linear="yes" idref="\(epigraph))"/>
-          <itemref linear="yes" idref="\(chapter1))"/>
-          <itemref linear="yes" idref="\(chapter2)"/>
-          <itemref linear="yes" idref="\(chapter3)"/>
-          <itemref linear="yes" idref="\(chapter4)"/>
-          <itemref idref="\(copyright)" linear="yes"/>
-          <itemref idref="\(toc))" linear="no"/>
         </spine>
         """
         
@@ -69,6 +49,19 @@ final class ParserTests: XCTestCase {
         let parser = SimpleXMLBeaver()
         let result = parser.gnaw(xmlData: xmlData)
         
+        switch result {
+        case .success(let element):
+            guard let spine = SpineXMLBeaver.gnaw(spineXML: element) else { XCTFail("SpineXML wasn't parsed"); return; }
+            guard spine.items.count == 2 else { XCTFail("Wrong number of items inside Spine"); return; }
+        
+            XCTAssertEqual(spine.items[0].idRef, cover)
+            XCTAssertEqual(spine.items[0].linear, false)
+            XCTAssertEqual(spine.items[1].idRef, titlePage)
+            XCTAssertEqual(spine.items[1].linear, true)
+            
+        case .failure(let error):
+            XCTAssertFalse(true, "Spine XML parsing failed \(error)")
+        }
     }
     
     func testContainerXMLParsing() {
@@ -203,5 +196,6 @@ final class ParserTests: XCTestCase {
         ("testContainerXMLParsing", testContainerXMLParsing),
         ("testManifestXML", testManifestXML),
         ("testMetadataXML", testMetadataXML),
+        ("testSpineXMLParsing", testSpineXMLParsing),
     ]
 }
