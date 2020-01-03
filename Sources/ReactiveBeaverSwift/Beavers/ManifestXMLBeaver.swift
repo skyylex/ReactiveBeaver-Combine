@@ -46,7 +46,7 @@ class ManifestXMLBeaver {
     }
     
     static func gnaw(manifestXML: SimpleXMLElement) -> Manifest? {
-        guard manifestXML.title == Keys.manifest else { return nil }
+        guard manifestXML.name == Keys.manifest else { return nil }
         
         let nullableItems = manifestXML.children.map { (element) -> Manifest.Item? in
             guard let identifier = element.attributes[Keys.id],

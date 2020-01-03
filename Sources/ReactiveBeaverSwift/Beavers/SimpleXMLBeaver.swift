@@ -9,15 +9,16 @@ import Foundation
 
 final class SimpleXMLElement {
     
-    let title: String
+    let name: String
     let parent: SimpleXMLElement?
     let attributes: [String : String]
     
     private(set) var isFrozen = false
+    private(set) var content: String = ""
     private(set) var children = [SimpleXMLElement]()
     
     init(title: String, parent: SimpleXMLElement?, attributes: [String : String]) {
-        self.title = title
+        self.name = title
         self.parent = parent
         self.attributes = attributes
     }
@@ -30,6 +31,10 @@ final class SimpleXMLElement {
         guard !isFrozen else { preconditionFailure("Frozen elements shouldn't be changed") }
         
         children += [child]
+    }
+    
+    func addContent(row: String) {
+        self.content += row
     }
     
 }
@@ -75,6 +80,10 @@ final class SimpleXMLBeaver: NSObject, XMLParserDelegate {
                                           attributes: attributeDict)
         currentElement?.add(child: newElement)
         currentElement = newElement
+    }
+    
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
+        currentElement?.addContent(row: string)
     }
     
     func parser(_ parser: XMLParser,

@@ -20,7 +20,7 @@ final class ContainerXMLBeaver {
     }
     
     private static func gnaw(element: SimpleXMLElement) -> PackageOpfURL? {
-        if let fullPath = element.attributes[Keys.fullPathKey], element.title == Keys.targetNodeKey {
+        if let fullPath = element.attributes[Keys.fullPathKey], element.name == Keys.targetNodeKey {
             return URL(string: fullPath)
         }
 

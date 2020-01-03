@@ -56,6 +56,54 @@ final class ParserTests: XCTestCase {
         }
     }
     
+    func testMetadataXML() {
+        let title = "Moby-Dick"
+        let creator = "Herman Melville"
+        let identifier = "code.google.com.epub-samples.moby-dick-basic"
+        let language = "en-US"
+        let publisher = "Harper &amp; Brothers, Publishers"
+        let contributor = "Dave Cramer"
+        let rights = "This work is shared using CC BY-SA 3.0 license."
+        
+        let metadataXMLString = """
+        <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+          <dc:title id="title">\(title)</dc:title>
+          <meta refines="#title" property="title-type">main</meta>
+          <dc:creator id="creator">\(creator)</dc:creator>
+          <meta refines="#creator" property="file-as">MELVILLE, HERMAN</meta>
+          <meta refines="#creator" property="role" scheme="marc:relators">aut</meta>
+          <dc:identifier id="pub-id">\(identifier)</dc:identifier>
+          <dc:language>\(language)</dc:language>
+          <meta property="dcterms:modified">2012-01-18T12:47:00Z</meta>
+          <dc:publisher>\(publisher)</dc:publisher>
+          <dc:contributor id="contrib1">\(contributor)</dc:contributor>
+          <meta refines="#contrib1" property="role" scheme="marc:relators">mrk</meta>
+          <dc:rights>\(rights)</dc:rights>
+          <link rel="cc:license" href="http://creativecommons.org/licenses/by-sa/3.0/"/>
+          <meta property="cc:attributionURL">http://code.google.com/p/epub-samples/</meta>
+        </metadata>
+        """
+        
+        guard let xmlData = metadataXMLString.data(using: .utf8) else { preconditionFailure("Failed to create xml data") }
+        
+        let parser = SimpleXMLBeaver()
+        let result = parser.gnaw(xmlData: xmlData)
+        
+        switch result {
+        case .success(let element):
+            let metadata = MetadataXMLBeaver.gnaw(metadataXML: element)
+            XCTAssertEqual(metadata.title, title)
+            XCTAssertEqual(metadata.creator, creator)
+            XCTAssertEqual(metadata.publisher, publisher.replacingOccurrences(of: "&amp;", with: "&"))
+            XCTAssertEqual(metadata.contributor, contributor)
+            XCTAssertEqual(metadata.identifier, identifier)
+            XCTAssertEqual(metadata.language, language)
+            XCTAssertEqual(metadata.rights, rights)
+        case .failure(let error):
+            XCTAssertFalse(true, "Manifest XML parsing failed \(error)")
+        }
+    }
+    
     func testManifestXML() {
         let manifestXMLString = """
         <manifest>
@@ -116,5 +164,6 @@ final class ParserTests: XCTestCase {
         ("testParsing", testParsing),
         ("testContainerXMLParsing", testContainerXMLParsing),
         ("testManifestXML", testManifestXML),
+        ("testMetadataXML", testMetadataXML),
     ]
 }
