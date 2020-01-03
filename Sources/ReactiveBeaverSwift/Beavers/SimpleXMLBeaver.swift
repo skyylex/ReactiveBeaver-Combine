@@ -34,6 +34,8 @@ final class SimpleXMLElement {
     }
     
     func addContent(row: String) {
+        guard !isFrozen else { preconditionFailure("Frozen elements shouldn't be changed") }
+        
         self.content += row
     }
     
