@@ -17,15 +17,19 @@ final class ParserTests: XCTestCase {
     }
     
     func testParsing() {
-        let parser = Parser(unpacker: MockedUnarchiver())
+        let parser = Parser(unpacker: ZipUnarchiver())
 
         let expectation = self.expectation(description: "Parsing should return valid Epub object")
         parser.parse(epubURL: mobyDickEpubURL, destinationFolderURL: destinationFolderURL) { result in
             switch (result) {
-            case .failure(_):
+            case .failure(let error):
+                XCTFail(error.localizedDescription)
                 break
             case .success(let epub):
-                XCTAssertEqual(epub.sha1, "F9E72E387F1D844B767C961AE98B8AFED6BDE76A")
+                XCTAssertEqual(epub.destinationPath.path, self.destinationFolderURL.path)
+                XCTAssertEqual(epub.opfPackage.manifest.items.count, 151)
+                XCTAssertEqual(epub.opfPackage.metadata.title, "Moby-Dick")
+                XCTAssertEqual(epub.opfPackage.spine.items.count, 144)
                 expectation.fulfill()
             }
         }
@@ -81,7 +85,7 @@ final class ParserTests: XCTestCase {
         switch result {
         case .success(let element):
             let container = ContainerXMLBeaver.gnaw(containerXML: element)
-            XCTAssertEqual(container?.packageOpfURL.path ?? "", "OPS/package.opf")
+            XCTAssertEqual(container?.opfPackagePath ?? "", "OPS/package.opf")
         case .failure(let error):
             XCTAssertFalse(true, "Container XML parsing failed \(error)")
         }
@@ -123,13 +127,13 @@ final class ParserTests: XCTestCase {
         switch result {
         case .success(let element):
             let metadata = MetadataXMLBeaver.gnaw(metadataXML: element)
-            XCTAssertEqual(metadata.title, title)
-            XCTAssertEqual(metadata.creator, creator)
-            XCTAssertEqual(metadata.publisher, publisher.replacingOccurrences(of: "&amp;", with: "&"))
-            XCTAssertEqual(metadata.contributor, contributor)
-            XCTAssertEqual(metadata.identifier, identifier)
-            XCTAssertEqual(metadata.language, language)
-            XCTAssertEqual(metadata.rights, rights)
+            XCTAssertEqual(metadata?.title, title)
+            XCTAssertEqual(metadata?.creator, creator)
+            XCTAssertEqual(metadata?.publisher, publisher.replacingOccurrences(of: "&amp;", with: "&"))
+            XCTAssertEqual(metadata?.contributor, contributor)
+            XCTAssertEqual(metadata?.identifier, identifier)
+            XCTAssertEqual(metadata?.language, language)
+            XCTAssertEqual(metadata?.rights, rights)
         case .failure(let error):
             XCTAssertFalse(true, "Manifest XML parsing failed \(error)")
         }
@@ -187,7 +191,7 @@ final class ParserTests: XCTestCase {
         guard let path = bundle.path(forResource: "moby-dick", ofType: "epub") else {
             preconditionFailure("moby-dick.epub cannot be located (or you're running tests from Xcode, => use `swift test` instead)")
         }
-
+        
         return URL(fileURLWithPath: path)
     }
     

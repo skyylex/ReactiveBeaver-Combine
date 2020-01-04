@@ -7,10 +7,10 @@
 
 import Foundation
 
-final class MetadataXMLBeaver {
+struct MetadataXMLBeaver {
     typealias MetadataMap = [String : String]
     
-    static func gnaw(metadataXML: SimpleXMLElement) -> Metadata {
+    static func gnaw(metadataXML: SimpleXMLElement) -> Metadata? {
         let supportedKeys = [
             Metadata.Keys.titleKey,
             Metadata.Keys.creatorKey,

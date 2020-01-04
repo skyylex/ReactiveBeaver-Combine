@@ -3,7 +3,7 @@ import XCTest
 
 final class PathValidatorTests: XCTestCase {
     static let epubContentsURL = FileSupport.temporaryDirectoryURL()
-    var paths: Paths = { Paths(epubUnzippedFolderURL: PathValidatorTests.epubContentsURL) }()
+    var paths: BasicPaths = { BasicPaths(rootURL: PathValidatorTests.epubContentsURL) }()
     
     override func setUp() {
         cleanUpFileSystem()
@@ -15,7 +15,7 @@ final class PathValidatorTests: XCTestCase {
     
     func testNonExistingPathsValidation() {
         let fileURLs = Set([paths.containerXML])
-        let directoryURLs = Set([paths.metaInfDirectory, paths.oebpsDirectory])
+        let directoryURLs = Set([paths.metaInfDirectory])
         
         let validationErrors = PathValidator.validate(paths: paths)
         let brokenURLs = validationErrors.map { (error: PathValidator.ErrorType) -> URL in
@@ -40,19 +40,14 @@ final class PathValidatorTests: XCTestCase {
     
     // Shortcuts
     
-    func createAllItems(from paths: Paths) {
+    func createAllItems(from paths: BasicPaths) {
         FileSupport.createDirectory(at: paths.metaInfDirectory)
-        FileSupport.createDirectory(at: paths.oebpsDirectory)
         FileSupport.createDummyFile(using: paths.containerXML)
     }
     
     func cleanUpFileSystem() {
         do {
             try FileManager.default.removeItem(at: paths.containerXML)
-        } catch {}
-        
-        do {
-            try FileManager.default.removeItem(at: paths.oebpsDirectory)
         } catch {}
         
         do {

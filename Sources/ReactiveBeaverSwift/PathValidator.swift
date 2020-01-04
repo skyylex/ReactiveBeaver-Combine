@@ -7,19 +7,34 @@
 
 import Foundation
 
-struct Paths {
+struct BasicPaths {
     private static let metaInfoKey = "META-INF"
-    private static let oebpsKey = "OEBPS"
     private static let containerXMLKey = "container.xml"
     
+    let rootURL: URL
     let metaInfDirectory: URL
-    let oebpsDirectory: URL
     let containerXML: URL
     
-    init(epubUnzippedFolderURL: URL) {
-        metaInfDirectory = epubUnzippedFolderURL.appendingPathComponent(Paths.metaInfoKey)
-        oebpsDirectory = epubUnzippedFolderURL.appendingPathComponent(Paths.oebpsKey)
-        containerXML = metaInfDirectory.appendingPathComponent(Paths.containerXMLKey)
+    init(rootURL: URL) {
+        self.rootURL = rootURL
+        self.metaInfDirectory = rootURL.appendingPathComponent(BasicPaths.metaInfoKey)
+        self.containerXML = metaInfDirectory.appendingPathComponent(BasicPaths.containerXMLKey)
+    }
+}
+
+struct DetailedPaths {
+    let opfPackageURL: URL
+    
+    init(rootURL: URL, opfPackagePath: String) {
+        self.opfPackageURL = DetailedPaths.completeURL(base: rootURL, pathToFile: opfPackagePath)
+    }
+    
+    private static func completeURL(base: URL, pathToFile: String) -> URL {
+        if pathToFile.hasPrefix(base.path) {
+            return URL(fileURLWithPath: pathToFile)
+        } else {
+            return base.appendingPathComponent(pathToFile)
+        }
     }
 }
 
@@ -33,14 +48,13 @@ struct PathValidator {
         return FileManager.default.directoryExists(at: directoryURL.path)
     }
     
-    static func validate(paths: Paths) -> [ErrorType] {
+    static func validate(paths: BasicPaths) -> [ErrorType] {
         let fileURLs = [
             paths.containerXML,
         ]
         
         let directoryURLs = [
             paths.metaInfDirectory,
-            paths.oebpsDirectory,
         ]
         
         let errorFromURL = { (invalidItemURL: URL) in

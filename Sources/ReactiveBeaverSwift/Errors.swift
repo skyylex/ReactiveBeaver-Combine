@@ -26,6 +26,8 @@ extension Parser {
         case xmlFileOpening
         case xmlNoFullPathAttribute
         case xmlNoRootFileElement
+        case cannotParseOPFFile
+        case incorrectContainerXML
     }
     
 }

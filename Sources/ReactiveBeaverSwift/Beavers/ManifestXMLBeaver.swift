@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ManifestXMLBeaver {
+struct ManifestXMLBeaver {
     
     static func gnaw(manifestXML: SimpleXMLElement) -> Manifest? {
         guard manifestXML.name == Manifest.Keys.manifest else { return nil }

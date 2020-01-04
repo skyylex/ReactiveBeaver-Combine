@@ -7,18 +7,18 @@
 
 import Foundation
 
-final class ContainerXMLBeaver {
+struct ContainerXMLBeaver {
     
-    static func gnaw(containerXML: SimpleXMLElement) -> ContainerXML? {
+    static func gnaw(containerXML: SimpleXMLElement) -> Container? {
         return gnaw(element: containerXML)
     }
     
-    private static func gnaw(element: SimpleXMLElement) -> ContainerXML? {
-        if let fullPath = element.attributes[ContainerXML.Keys.fullPathKey],
-               element.name == ContainerXML.Keys.targetNodeKey {
+    private static func gnaw(element: SimpleXMLElement) -> Container? {
+        if let fullPath = element.attributes[Container.Keys.fullPathKey],
+               element.name == Container.Keys.targetNodeKey {
             guard let url = URL(string: fullPath) else { return nil }
             
-            return ContainerXML(packageOpfURL: url)
+            return Container(opfPackagePath: url.path)
         }
 
         return element.children.map { gnaw(containerXML: $0) }.compactMap { $0 }.first

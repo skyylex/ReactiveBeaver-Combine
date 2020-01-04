@@ -8,35 +8,17 @@
 import Foundation
 
 struct Epub {
-    let sha1: String // FIXME: type is not optimized here
-    let sourcePath: URL
     let destinationPath: URL
-    let spine: Spine
-    let manifest: Manifest
-    let metadata: Metadata
-    let container: ContainerXML
-    let coverPath: URL?
-    
-    class NavPointElement {
-        let level: String // FIXME: type is not optimized here
-        var parentElement: NavPointElement?
-        let childElements: [NavPointElement]
-        
-        init(level: String, parentElement: NavPointElement? = nil, childElements: [NavPointElement] = []) {
-            self.level = level
-            self.parentElement = parentElement
-            self.childElements = childElements
-        }
-    }
+    let opfPackage: OPFPackage
 }
 
-struct ContainerXML {
+struct Container {
     struct Keys {
         static let targetNodeKey = "rootfile"
         static let fullPathKey = "full-path"
     }
     
-    let packageOpfURL: URL
+    let opfPackagePath: String
 }
 
 struct Metadata {
