@@ -16,11 +16,18 @@ extension ZipUnarchiver {
     }
 }
 
-extension Parser {
+extension ArchiveBeaver {
     
     enum ErrorType: Error {
         case incorrectDestinationPath
         case incorrectSourcePath
+        case cannotUnarchive
+    }
+}
+
+extension ReactiveBeaver {
+    
+    enum ErrorType: Error {
         case inputParamsValidation
         case noDestinationFolder
         case xmlFileOpening

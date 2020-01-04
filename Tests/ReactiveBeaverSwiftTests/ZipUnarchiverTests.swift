@@ -3,33 +3,27 @@ import XCTest
 
 final class ZipUnarchiverTests: XCTestCase {
     func testUnzippingForEmptySourcePath() {
-        let unpacker = ZipUnarchiver()
-        let error = unpacker.unpack(zipArchiveURL: FileSupport.nonExistingURL(),
-                                    targetDirectoryURL: FileSupport.temporaryDirectoryURL())
+        let unarchiver = ZipUnarchiver()
+        let result = unarchiver.unpack(zipArchiveURL: FileSupport.nonExistingURL(),
+                                       targetDirectoryURL: FileSupport.temporaryDirectoryURL())
         
-        guard let unwrapedError = error as? ZipUnarchiver.ErrorType else { XCTFail(); return; }
-        
-        XCTAssertEqual(unwrapedError, ZipUnarchiver.ErrorType.incorrectSourcePath)
+        XCTAssertFalse(result)
     }
     
     func testUnzippingForEmptyDestinationPath() {
-        let unpacker = ZipUnarchiver()
-        let error = unpacker.unpack(zipArchiveURL: FileSupport.createDummyFile(),
-                                    targetDirectoryURL: FileSupport.nonExistingURL())
+        let unarchiver = ZipUnarchiver()
+        let result = unarchiver.unpack(zipArchiveURL: FileSupport.createDummyFile(),
+                                       targetDirectoryURL: FileSupport.nonExistingURL())
         
-        guard let unwrapedError = error as? ZipUnarchiver.ErrorType else { XCTFail(); return; }
-        
-        XCTAssertEqual(unwrapedError, ZipUnarchiver.ErrorType.incorrectDestinationPath)
+        XCTAssertFalse(result)
     }
     
     func testUnzippingForBrokenArchive() {
-        let unpacker = ZipUnarchiver()
-        let error = unpacker.unpack(zipArchiveURL: FileSupport.createDummyFile(),
-                                    targetDirectoryURL: FileSupport.temporaryDirectoryURL())
+        let unarchiver = ZipUnarchiver()
+        let result = unarchiver.unpack(zipArchiveURL: FileSupport.createDummyFile(),
+                                       targetDirectoryURL: FileSupport.temporaryDirectoryURL())
         
-        guard let unwrapedError = error as? ZipUnarchiver.ErrorType else { XCTFail(); return; }
-        
-        XCTAssertEqual(unwrapedError, ZipUnarchiver.ErrorType.incorrectArchive)
+        XCTAssertTrue(result)
     }
 
     static var allTests = [

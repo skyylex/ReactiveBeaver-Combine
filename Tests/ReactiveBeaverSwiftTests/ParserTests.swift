@@ -2,8 +2,8 @@ import XCTest
 @testable import ReactiveBeaverSwift
 
 struct MockedUnarchiver: Unarchiver {
-    func unpack(zipArchiveURL: URL, targetDirectoryURL: URL) -> Error? {
-        return nil
+    func unpack(zipArchiveURL: URL, targetDirectoryURL: URL) -> Bool {
+        return true
     }
 }
 
@@ -17,10 +17,10 @@ final class ParserTests: XCTestCase {
     }
     
     func testParsing() {
-        let parser = Parser(unpacker: ZipUnarchiver())
+        let parser = ReactiveBeaver(unpacker: ZipUnarchiver())
 
         let expectation = self.expectation(description: "Parsing should return valid Epub object")
-        parser.parse(epubURL: mobyDickEpubURL, destinationFolderURL: destinationFolderURL) { result in
+        parser.gnaw(epubURL: mobyDickEpubURL, destinationFolderURL: destinationFolderURL) { result in
             switch (result) {
             case .failure(let error):
                 XCTFail(error.localizedDescription)

@@ -9,21 +9,21 @@ import Foundation
 import ZIPFoundation
 
 final class ZipUnarchiver: Unarchiver {
-    func unpack(zipArchiveURL: URL, targetDirectoryURL: URL) -> Error? {
+    func unpack(zipArchiveURL: URL, targetDirectoryURL: URL) -> Bool {
         guard PathValidator.validate(fileURL: zipArchiveURL) else {
-            return ErrorType.incorrectSourcePath
+            return false
         }
         
         guard PathValidator.validate(directoryURL: targetDirectoryURL) else {
-           return ErrorType.incorrectDestinationPath
+           return false
         }
         
         do {
             try FileManager.default.unzipItem(at: zipArchiveURL, to: targetDirectoryURL)
         } catch {
-            return ErrorType.incorrectArchive
+            return false
         }
         
-        return nil // Success with no error
+        return true
     }
 }
