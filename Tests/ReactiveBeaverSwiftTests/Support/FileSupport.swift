@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FileSupport {
+class FileSupport: NSObject {
     static func nonExistingURL() -> URL {
         return temporaryDirectoryURL().appendingPathComponent(UUID().uuidString)
     }
@@ -50,5 +50,30 @@ struct FileSupport {
         guard let data = randomString.data(using: .utf8) else { preconditionFailure("Cannot create dummy data") }
         
         return data
+    }
+
+    static func createTempFolderURL() -> URL {
+        let newFolderURL = temporaryDirectoryURL().appendingPathComponent(UUID().uuidString)
+        do {
+            try FileManager.default.createDirectory(at: newFolderURL, withIntermediateDirectories: true, attributes: nil)
+        } catch (let error) {
+            preconditionFailure("Cannot create temp folder due to error: \(error)")
+        }
+
+        guard FileManager.default.fileExists(atPath: newFolderURL.path) else {
+            preconditionFailure("Cannot create temp folder at \(newFolderURL.path)")
+        }
+
+        return newFolderURL
+    }
+
+    static func mobyDickFileURL() -> URL {
+        let bundle = Bundle(for: self.classForCoder())
+
+        guard let path = bundle.path(forResource: "moby-dick", ofType: "epub") else {
+            preconditionFailure("moby-dick.epub cannot be located (or you're running tests from Xcode, => use `swift test` instead)")
+        }
+        
+        return URL(fileURLWithPath: path)
     }
 }

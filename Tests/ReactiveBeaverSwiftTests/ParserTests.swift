@@ -12,8 +12,8 @@ final class ParserTests: XCTestCase {
     var destinationFolderURL: URL!
 
     override func setUp() {
-        mobyDickEpubURL = mobyDickFileURL()
-        destinationFolderURL = createTempFolderURL()
+        mobyDickEpubURL = FileSupport.mobyDickFileURL()
+        destinationFolderURL = FileSupport.createTempFolderURL()
     }
     
     func testParsing() {
@@ -164,35 +164,6 @@ final class ParserTests: XCTestCase {
         case .failure(let error):
             XCTAssertFalse(true, "Manifest XML parsing failed \(error)")
         }
-    }
-    
-    private func sharedTemporaryFolderURL() -> URL {
-        return URL(fileURLWithPath: NSTemporaryDirectory())
-    }
-
-    private func createTempFolderURL() -> URL {
-        let newFolderURL = sharedTemporaryFolderURL().appendingPathComponent(UUID().uuidString)
-        do {
-            try FileManager.default.createDirectory(at: newFolderURL, withIntermediateDirectories: true, attributes: nil)
-        } catch (let error) {
-            preconditionFailure("Cannot create temp folder due to error: \(error)")
-        }
-
-        guard FileManager.default.fileExists(atPath: newFolderURL.path) else {
-            preconditionFailure("Cannot create temp folder at \(newFolderURL.path)")
-        }
-
-        return newFolderURL
-    }
-
-    private func mobyDickFileURL() -> URL {
-        let bundle = Bundle(for: self.classForCoder)
-
-        guard let path = bundle.path(forResource: "moby-dick", ofType: "epub") else {
-            preconditionFailure("moby-dick.epub cannot be located (or you're running tests from Xcode, => use `swift test` instead)")
-        }
-        
-        return URL(fileURLWithPath: path)
     }
     
     static var allTests = [

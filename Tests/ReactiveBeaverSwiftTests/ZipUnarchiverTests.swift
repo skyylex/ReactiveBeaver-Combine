@@ -23,6 +23,14 @@ final class ZipUnarchiverTests: XCTestCase {
         let result = unarchiver.unpack(zipArchiveURL: FileSupport.createDummyFile(),
                                        targetDirectoryURL: FileSupport.temporaryDirectoryURL())
         
+        XCTAssertFalse(result)
+    }
+    
+    func testUnzippingWithProperArchive() {
+        let unarchiver = ZipUnarchiver()
+        let result = unarchiver.unpack(zipArchiveURL: FileSupport.mobyDickFileURL(),
+                                       targetDirectoryURL: FileSupport.temporaryDirectoryURL())
+        
         XCTAssertTrue(result)
     }
 
