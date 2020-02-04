@@ -9,7 +9,7 @@ let currentDirectoryURL = URL(fileURLWithPath: FileManager.default.currentDirect
 let scriptURL = URL(fileURLWithPath: CommandLine.arguments[0], relativeTo: currentDirectoryURL)
 let scriptsFolderURL = scriptURL.deletingLastPathComponent()
 let repositoryRootURL = scriptsFolderURL.deletingLastPathComponent()
-let testsConfigurationFolderURL = repositoryRootURL.appendingPathComponent("Tests/Configuration")
+let testsConfigurationFolderURL = repositoryRootURL.appendingPathComponent("Tests/ReactiveBeaverSwiftTests/Configuration")
 let booksPathsScriptFileURL = testsConfigurationFolderURL.appendingPathComponent("BooksPaths.swift")
 
 let epubBooksFolderURL = currentDirectoryURL.appendingPathComponent("ReactiveBeaverTestResources/epub-books")
@@ -25,14 +25,20 @@ enum BookPaths {
 }
 """
 
-let success: Void? = try? content.write(toFile:booksPathsScriptFileURL.path,
-                                        atomically: true,
-                                        encoding: String.Encoding.utf8)
-if let _ = success {
-    print("Successfully generated book paths at: \(booksPathsScriptFileURL.path)")
-} else {
-    abort()
+do {
+    try FileManager.default.createDirectory(atPath: testsConfigurationFolderURL.path,
+                                            withIntermediateDirectories: true,
+                                           attributes: nil)
+} catch let e {
+    print("\(e)")
 }
 
-
-
+do {
+	try content.write(toFile:booksPathsScriptFileURL.path,
+					  atomically: true,
+					  encoding: String.Encoding.utf8)	
+	print("Successfully generated book paths configuration at: \(booksPathsScriptFileURL.path)")
+} catch let e {
+	print("Cannot write book path due to the error \(e)")
+	abort()
+}

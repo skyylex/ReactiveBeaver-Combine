@@ -89,5 +89,5 @@ fastlane/test_output
 iOSInjectionProject/
 
 # Test Resources
-Tests/Configuration/BooksPaths.swift
+Tests/ReactiveBeaverSwiftTests/Configuration/BooksPaths.swift
 ReactiveBeaverTestResources/*
