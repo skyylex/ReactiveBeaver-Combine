@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  SpineXMLBeaver.swift
 //  
 //
 //  Created by Yury Lapitsky on 03/01/2020.
@@ -22,6 +22,8 @@ enum BoolLiteral: String {
 }
 
 struct SpineXMLBeaver {
+    
+    private init() { }
     
     static func gnaw(spineXML: SimpleXMLElement) -> Spine? {
         guard spineXML.name == Spine.Keys.spineKey else { return nil }
