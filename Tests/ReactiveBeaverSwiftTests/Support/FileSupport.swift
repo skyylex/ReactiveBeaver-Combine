@@ -68,9 +68,8 @@ class FileSupport: NSObject {
     }
 
     static func mobyDickFileURL() -> URL {
-        let bundle = Bundle(for: self.classForCoder())
-
-        guard let path = bundle.path(forResource: "moby-dick", ofType: "epub") else {
+        let path = BookPaths.mobyDickPath
+        guard FileManager.default.fileExists(atPath: path) else {
             preconditionFailure("moby-dick.epub cannot be located (or you're running tests from Xcode, => use `swift test` instead)")
         }
         
