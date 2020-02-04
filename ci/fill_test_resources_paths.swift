@@ -17,7 +17,7 @@ let mobyDickFileURL = epubBooksFolderURL.appendingPathComponent("moby-dick.epub"
 
 let content =
 """
-/// This file is generetad and filled with proper paths for testing with real books
+/// This file is generated and filled with proper paths for testing with real books
 /// If paths are empty please check that you've run ./setup.sh
 
 enum BookPaths {
